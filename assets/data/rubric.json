@@ -1,0 +1,132 @@
+{
+  "version": "1.0",
+  "coreCriterion": {
+    "zh": "能否与外国人流畅沟通",
+    "en": "Can you communicate fluently with foreign speakers"
+  },
+  "dimensions": {
+    "fluency": {
+      "weight": 0.25,
+      "labelZh": "流利度",
+      "labelEn": "Fluency",
+      "descZh": "语速、停顿频率、自我修正是否自然连贯",
+      "descEn": "Speech rate, hesitation and self-correction"
+    },
+    "pronunciation": {
+      "weight": 0.25,
+      "labelZh": "发音清晰度",
+      "labelEn": "Pronunciation",
+      "descZh": "音素准确度、重音、连读与语调",
+      "descEn": "Accuracy of sounds, stress, linking and intonation"
+    },
+    "grammarVocab": {
+      "weight": 0.20,
+      "labelZh": "语法与词汇",
+      "labelEn": "Grammar & Vocabulary",
+      "descZh": "句法正确性、词汇丰富度与地道程度",
+      "descEn": "Sentence accuracy, lexical range and naturalness"
+    },
+    "content": {
+      "weight": 0.20,
+      "labelZh": "内容相关性",
+      "labelEn": "Content",
+      "descZh": "是否切题、逻辑连贯、观点完整",
+      "descEn": "Relevance, coherence and completeness of ideas"
+    },
+    "interaction": {
+      "weight": 0.10,
+      "labelZh": "交际策略",
+      "labelEn": "Interaction",
+      "descZh": "回应与追问、话轮衔接、临场应变",
+      "descEn": "Responding, turn-taking and managing the exchange"
+    }
+  },
+  "levels": [
+    {
+      "code": "A1",
+      "min": 0,
+      "max": 35,
+      "labelZh": "入门",
+      "labelEn": "Beginner",
+      "descZh": "只能蹦出零散单词或极短句，尚无法成句沟通。",
+      "descEn": "Can only produce isolated words; cannot yet hold a sentence-level exchange."
+    },
+    {
+      "code": "A2",
+      "min": 35,
+      "max": 50,
+      "labelZh": "基础",
+      "labelEn": "Elementary",
+      "descZh": "能就日常熟悉话题简单对话，错误较多，常需对方迁就。",
+      "descEn": "Handles simple, familiar topics; frequent errors and much accommodation from the listener."
+    },
+    {
+      "code": "B1",
+      "min": 50,
+      "max": 65,
+      "labelZh": "中级",
+      "labelEn": "Intermediate",
+      "descZh": "能应付旅行与工作基本交流，可表达观点，但流畅度与准确度仍不稳定。",
+      "descEn": "Manages basic travel and work exchanges; expresses opinions with uneven fluency."
+    },
+    {
+      "code": "B2",
+      "min": 65,
+      "max": 78,
+      "labelZh": "中高级",
+      "labelEn": "Upper-Intermediate",
+      "descZh": "能与外国人顺畅交流大部分话题，偶有卡顿，基本无需对方迁就。",
+      "descEn": "Communicates smoothly on most topics with only occasional hesitation."
+    },
+    {
+      "code": "C1",
+      "min": 78,
+      "max": 90,
+      "labelZh": "高级",
+      "labelEn": "Advanced",
+      "descZh": "表达自然流畅，能参与深入讨论，语域把握较准。",
+      "descEn": "Speaks naturally and fluently; engages in in-depth discussion with good register control."
+    },
+    {
+      "code": "C2",
+      "min": 90,
+      "max": 100.1,
+      "labelZh": "精通",
+      "labelEn": "Proficient",
+      "descZh": "接近母语者水平，表达精准、语域与修辞自然得体。",
+      "descEn": "Near-native: precise, idiomatic and rhetorically natural."
+    }
+  ],
+  "advice": {
+    "fluency": {
+      "zh": "多做「限时连说」训练：任选一个话题连续讲 90 秒不停顿，录音后回听标记卡顿处，逐步减少 'um / 呃' 与自我更正。",
+      "en": "Practise timed monologues: speak for 90 seconds without stopping, then review the recording and cut filler and self-corrections."
+    },
+    "pronunciation": {
+      "zh": "针对易错音（如 th / v / r / l 与词尾辅音）做最小对立对跟读，配合智能评测反复比对，重点练重音与句子语调。",
+      "en": "Drill problem sounds (th / v / r / l, final consonants) with minimal-pair shadowing, focusing on stress and sentence intonation."
+    },
+    "grammarVocab": {
+      "zh": "建立「功能表达库」：把观点、举例、对比、让步各准备 2–3 个句型，练习时强制替换使用，扩大主动词汇。",
+      "en": "Build a bank of functional phrases (opinion, example, contrast, concession) and force yourself to rotate them to widen active vocabulary."
+    },
+    "content": {
+      "zh": "答题用「总—分—总」结构：先亮观点，再给一到两个带细节的例子，最后收一句结论，避免跑题与空洞。",
+      "en": "Answer with a claim–support–conclusion structure: state a view, give one or two detailed examples, then close with a short conclusion."
+    },
+    "interaction": {
+      "zh": "练习「回应 + 追问」：每次回答后主动抛回一个问题，并常用 'Sorry, could you repeat that?' 等交际策略，保持对话流动。",
+      "en": "Practise respond-and-ask: after each answer, ask a follow-up question and use repair phrases to keep the exchange moving."
+    }
+  },
+  "quickMode": {
+    "listenIds": ["LS-S1", "LS-S2", "LS-S3", "LS-D1"],
+    "speakIds": ["SP-R5", "SP-R1", "SP-T1", "SP-I1", "SP-RT2"],
+    "descZh": "快速版：约 10 分钟，听力 4 题 + 口语 5 题，给出粗略等级。",
+    "descEn": "Quick mode: about 10 minutes, 4 listening + 5 speaking items, rough level."
+  },
+  "fullMode": {
+    "descZh": "完整版：约 25 分钟，全部听力与口语题型，精准评分。",
+    "descEn": "Full mode: about 25 minutes, all listening and speaking items, precise scoring."
+  }
+}

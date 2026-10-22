@@ -1,0 +1,201 @@
+{
+  "version": "1.0",
+  "updatedAt": "2026-10",
+  "note": "听力题库。音频由浏览器内置语音合成(SpeechSynthesis)朗读 script 字段，无需外部音频文件。type: dialogue=短对话 / passage=长对话短文 / dictation=听写填空。",
+  "questions": [
+    {
+      "id": "LS-S1",
+      "level": "A2",
+      "type": "dialogue",
+      "script": "Woman: What time does the museum close today? Man: At six, but the last entry is at five thirty.",
+      "question": "When is the last entry to the museum?",
+      "questionZh": "博物馆最后的入场时间是几点？",
+      "options": ["Six o'clock", "Five thirty", "Five o'clock", "Six thirty"],
+      "answer": 1,
+      "transcript": "Woman: What time does the museum close today? Man: At six, but the last entry is at five thirty.",
+      "modes": ["quick", "full"]
+    },
+    {
+      "id": "LS-S2",
+      "level": "A2",
+      "type": "dialogue",
+      "script": "Man: Are you taking the train or driving to Beijing? Woman: Neither. I booked a flight because the tickets were cheaper.",
+      "question": "How is the woman travelling to Beijing?",
+      "questionZh": "女士打算怎么去北京？",
+      "options": ["By train", "By car", "By plane", "By bus"],
+      "answer": 2,
+      "transcript": "Man: Are you taking the train or driving to Beijing? Woman: Neither. I booked a flight because the tickets were cheaper.",
+      "modes": ["quick", "full"]
+    },
+    {
+      "id": "LS-S3",
+      "level": "B1",
+      "type": "dialogue",
+      "script": "Woman: I would love to join the hiking trip, but I have to work on Saturday. Man: No worries, we are going on Sunday instead.",
+      "question": "Why can the woman now join the trip?",
+      "questionZh": "为什么女士现在可以参加这次徒步了？",
+      "options": ["It was moved to Sunday", "She took a day off", "It was cancelled", "She finished her work early"],
+      "answer": 0,
+      "transcript": "Woman: I would love to join the hiking trip, but I have to work on Saturday. Man: No worries, we are going on Sunday instead.",
+      "modes": ["quick", "full"]
+    },
+    {
+      "id": "LS-S4",
+      "level": "B1",
+      "type": "dialogue",
+      "script": "Man: The report is due tomorrow, but the client has not sent the data. Woman: Then let us send a reminder and prepare the sections we can do now.",
+      "question": "What does the woman suggest?",
+      "questionZh": "女士建议做什么？",
+      "options": ["Cancel the report", "Wait without acting", "Send a reminder and start what is possible", "Ask for a deadline extension"],
+      "answer": 2,
+      "transcript": "Man: The report is due tomorrow, but the client has not sent the data. Woman: Then let us send a reminder and prepare the sections we can do now.",
+      "modes": ["quick", "full"]
+    },
+    {
+      "id": "LS-S5",
+      "level": "B1",
+      "type": "dialogue",
+      "script": "Woman: How was the new restaurant? Man: The food was great, but we waited nearly an hour for a table.",
+      "question": "What was the man's complaint?",
+      "questionZh": "男士抱怨的是什么？",
+      "options": ["The food was cold", "The wait was very long", "The staff were rude", "The prices were high"],
+      "answer": 1,
+      "transcript": "Woman: How was the new restaurant? Man: The food was great, but we waited nearly an hour for a table.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-S6",
+      "level": "B2",
+      "type": "dialogue",
+      "script": "Man: I thought the presentation went well. Woman: It did, though I would have opened with the numbers rather than the background.",
+      "question": "What is the woman's opinion of the presentation?",
+      "questionZh": "女士对这次演示的评价是？",
+      "options": ["It was a complete failure", "It was good but could be better ordered", "It was too short", "She did not watch it"],
+      "answer": 1,
+      "transcript": "Man: I thought the presentation went well. Woman: It did, though I would have opened with the numbers rather than the background.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-S7",
+      "level": "B2",
+      "type": "dialogue",
+      "script": "Woman: Should we hire the second candidate? Man: I am not convinced. He answered well, but he never asked a single question about the team.",
+      "question": "Why is the man hesitant about the second candidate?",
+      "questionZh": "男士为什么对第二位候选人犹豫？",
+      "options": ["He lacked experience", "He showed little interest in the team", "He was late", "He asked for too much money"],
+      "answer": 1,
+      "transcript": "Woman: Should we hire the second candidate? Man: I am not convinced. He answered well, but he never asked a single question about the team.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-S8",
+      "level": "B1",
+      "type": "dialogue",
+      "script": "Man: Did you manage to fix the printer? Woman: Turns out it was not broken — it had just run out of paper.",
+      "question": "What was the real problem with the printer?",
+      "questionZh": "打印机真正的问题是什么？",
+      "options": ["It was broken", "It had no paper", "It was unplugged", "It needed new ink"],
+      "answer": 1,
+      "transcript": "Man: Did you manage to fix the printer? Woman: Turns out it was not broken — it had just run out of paper.",
+      "modes": ["full"]
+    },
+
+    {
+      "id": "LS-P1",
+      "level": "B1",
+      "type": "passage",
+      "script": "Many cities are replacing car lanes with bike paths. Supporters argue that this reduces traffic and pollution, and that cyclists spend more in local shops than drivers. Critics worry about delivery vehicles and people with limited mobility. So far, the data suggests that well-designed paths attract far more riders than expected.",
+      "question": "What does the data suggest about bike paths?",
+      "questionZh": "数据显示自行车道带来了什么？",
+      "options": ["They are rarely used", "They attract more riders than expected", "They increase pollution", "They hurt local shops"],
+      "answer": 1,
+      "transcript": "Many cities are replacing car lanes with bike paths. Supporters argue that this reduces traffic and pollution, and that cyclists spend more in local shops than drivers. Critics worry about delivery vehicles and people with limited mobility. So far, the data suggests that well-designed paths attract far more riders than expected.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-P2",
+      "level": "B2",
+      "type": "passage",
+      "script": "A recent survey of remote workers found that productivity stayed stable, but feelings of isolation rose sharply in the first six months. The strongest predictor of wellbeing was not the number of meetings, but whether colleagues had regular one-to-one chats. Companies that scheduled informal check-ins reported the lowest stress levels.",
+      "question": "What best predicted remote workers' wellbeing?",
+      "questionZh": "最能预测远程员工幸福感的因素是什么？",
+      "options": ["The number of meetings", "Having regular one-to-one chats", "Higher salaries", "Longer working hours"],
+      "answer": 1,
+      "transcript": "A recent survey of remote workers found that productivity stayed stable, but feelings of isolation rose sharply in the first six months. The strongest predictor of wellbeing was not the number of meetings, but whether colleagues had regular one-to-one chats. Companies that scheduled informal check-ins reported the lowest stress levels.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-P3",
+      "level": "B2",
+      "type": "passage",
+      "script": "Sleep researchers now say that a consistent bedtime matters more than total hours. Volunteers who slept the same seven hours but at irregular times performed worse on memory tests than those with a steady schedule. The lesson is simple: your brain values rhythm as much as rest.",
+      "question": "According to the passage, what matters most for memory?",
+      "questionZh": "根据短文，对记忆力最重要的是什么？",
+      "options": ["Sleeping more hours", "A consistent bedtime", "Napping in the afternoon", "Exercising before sleep"],
+      "answer": 1,
+      "transcript": "Sleep researchers now say that a consistent bedtime matters more than total hours. Volunteers who slept the same seven hours but at irregular times performed worse on memory tests than those with a steady schedule. The lesson is simple: your brain values rhythm as much as rest.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-P4",
+      "level": "C1",
+      "type": "passage",
+      "script": "Historians of technology caution against assuming that new tools simply replace old ones. The typewriter did not eliminate handwriting, and email did not end the phone call; instead, each new medium reshaped when and why we use the others. Adoption, they argue, is less a switch than a slow rebalancing of habits.",
+      "question": "What is the historians' main point?",
+      "questionZh": "历史学家的主要观点是什么？",
+      "options": ["New tools fully replace old ones", "New media reshape how we use older ones", "Old tools always disappear", "Technology changes habits instantly"],
+      "answer": 1,
+      "transcript": "Historians of technology caution against assuming that new tools simply replace old ones. The typewriter did not eliminate handwriting, and email did not end the phone call; instead, each new medium reshaped when and why we use the others. Adoption, they argue, is less a switch than a slow rebalancing of habits.",
+      "modes": ["full"]
+    },
+
+    {
+      "id": "LS-D1",
+      "level": "A2",
+      "type": "dictation",
+      "script": "The meeting starts at nine in the morning.",
+      "question": "听写填空：请补全句子。",
+      "questionZh": "听写填空：请补全句子。",
+      "blanks": ["meeting", "nine", "morning"],
+      "fullText": "The meeting starts at nine in the morning.",
+      "transcript": "The meeting starts at nine in the morning.",
+      "modes": ["quick", "full"]
+    },
+    {
+      "id": "LS-D2",
+      "level": "B1",
+      "type": "dictation",
+      "script": "I would rather take a taxi than wait for the bus.",
+      "question": "听写填空：请补全句子。",
+      "questionZh": "听写填空：请补全句子。",
+      "blanks": ["rather", "taxi", "wait"],
+      "fullText": "I would rather take a taxi than wait for the bus.",
+      "transcript": "I would rather take a taxi than wait for the bus.",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-D3",
+      "level": "B1",
+      "type": "dictation",
+      "script": "Could you please send me the invoice by Friday?",
+      "question": "听写填空：请补全句子。",
+      "questionZh": "听写填空：请补全句子。",
+      "blanks": ["send", "invoice", "Friday"],
+      "fullText": "Could you please send me the invoice by Friday?",
+      "transcript": "Could you please send me the invoice by Friday?",
+      "modes": ["full"]
+    },
+    {
+      "id": "LS-D4",
+      "level": "B2",
+      "type": "dictation",
+      "script": "Although the proposal was ambitious, the committee approved it unanimously.",
+      "question": "听写填空：请补全句子。",
+      "questionZh": "听写填空：请补全句子。",
+      "blanks": ["ambitious", "committee", "unanimously"],
+      "fullText": "Although the proposal was ambitious, the committee approved it unanimously.",
+      "transcript": "Although the proposal was ambitious, the committee approved it unanimously.",
+      "modes": ["full"]
+    }
+  ]
+}

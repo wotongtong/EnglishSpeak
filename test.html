@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>测评进行中 · 口语力测评</title>
+  <meta name="description" content="英语口语与听力在线测评答题页。" />
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body class="test-shell">
+
+  <!-- === Header（精简式，专注答题） === -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="index.html" aria-label="返回首页">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v10"/><path d="M8 6.5a4 4 0 0 0 8 0"/><path d="M6 19c2-1.6 4-2.4 6-2.4s4 .8 6 2.4"/></svg>
+        </span>
+        <span><span data-i18n="brand.name">口语力测评</span><small data-i18n="brand.sub">SPEAK ASSESS</small></span>
+      </a>
+      <div class="test-head" style="margin:0;gap:14px">
+        <span class="tag" id="apiStatus" data-i18n="status.mockShort">演示模式</span>
+        <span class="test-head__mode"><span data-i18n="common.mode">模式</span>: <b id="modeLabel">快速版</b></span>
+        <span class="test-head__mode" id="counter">1 / 1</span>
+      </div>
+      <div class="lang-switch" role="group" aria-label="语言切换">
+        <button data-lang="zh" aria-pressed="true">中文</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- === 答题主体 === -->
+  <main class="test-main">
+    <div class="wrap wrap--narrow">
+      <div class="progress" aria-hidden="true"><div class="progress__bar" id="progressBar"></div></div>
+      <div id="stage" aria-live="polite"></div>
+
+      <div class="btn-row" style="margin-top:26px;justify-content:space-between">
+        <button class="btn btn--quiet" id="btnPrev" data-i18n="common.prev">上一题</button>
+        <button class="btn btn--primary" id="btnNext" data-i18n="common.next">下一题</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- === Footer === -->
+  <footer class="site-footer" style="padding:24px 0">
+    <div class="wrap footer-grid">
+      <p class="footer-note">语音识别与口语评测由腾讯云提供 · 密钥仅存于服务端，前端不持有。</p>
+      <a class="footer-note" href="index.html" data-i18n="nav.backHome">返回首页</a>
+    </div>
+  </footer>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/recorder.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/scoring.js"></script>
+  <script src="assets/js/test.js"></script>
+</body>
+</html>

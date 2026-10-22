@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>口语力测评 · 英语口语水平在线测试</title>
+  <meta name="description" content="以「能否与外国人流畅沟通」为核心标准的英语口语与听力在线测评，给出 CEFR 对齐等级与可执行改进建议。" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/style.css" />
+</head>
+<body>
+
+  <!-- === Header / Nav === -->
+  <header class="site-header">
+    <div class="wrap nav">
+      <a class="brand" href="index.html">
+        <span class="brand__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"><path d="M12 3v10"/><path d="M8 6.5a4 4 0 0 0 8 0"/><path d="M6 19c2-1.6 4-2.4 6-2.4s4 .8 6 2.4"/></svg>
+        </span>
+        <span>
+          <span data-i18n="brand.name">口语力测评</span>
+          <small data-i18n="brand.sub">SPEAK ASSESS</small>
+        </span>
+      </a>
+      <nav class="nav__links" aria-label="主导航">
+        <a href="#how" data-i18n="nav.how">测评方式</a>
+        <a href="#levels" data-i18n="nav.levels">等级标准</a>
+        <a href="#start" data-i18n="nav.start">开始测评</a>
+      </nav>
+      <div class="lang-switch" role="group" aria-label="语言切换">
+        <button data-lang="zh" aria-pressed="true">中文</button>
+        <button data-lang="en" aria-pressed="false">EN</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- === Hero === -->
+    <section class="hero">
+      <div class="wrap hero__grid">
+        <div>
+          <p class="eyebrow reveal" style="--i:0" data-i18n="hero.eyebrow">CEFR 对齐 · 真实沟通能力测评</p>
+          <h1 class="hero__title reveal" style="--i:1" data-i18n-html="hero.titleHtml">你能否和外国人 <em>流畅沟通</em>？</h1>
+          <p class="hero__lead reveal" style="--i:2" data-i18n="hero.lead">我们用一套对齐 CEFR 的维度体系……</p>
+          <div class="btn-row reveal" style="--i:3">
+            <a class="btn btn--primary" href="test.html?mode=quick" data-i18n="hero.ctaQuick">快速版（约 10 分钟）</a>
+            <a class="btn btn--ghost" href="test.html?mode=full" data-i18n="hero.ctaFull">完整版（约 25 分钟）</a>
+          </div>
+          <div class="hero__meta reveal" style="--i:4">
+            <div class="hero__stat"><b>5</b><span data-i18n="hero.stat1">考察维度</span></div>
+            <div class="hero__stat"><b>6</b><span data-i18n="hero.stat2">评估等级</span></div>
+            <div class="hero__stat"><b>7</b><span data-i18n="hero.stat3">全题型</span></div>
+          </div>
+        </div>
+
+        <aside class="hero__aside reveal" style="--i:2">
+          <div class="hero__panel">
+            <p class="eyebrow" style="margin-bottom:6px" data-i18n="hero.panelTitle">能力维度雷达</p>
+            <p class="footer-note" style="margin-bottom:20px" data-i18n="hero.panelNote">示例：一位 B2 学习者</p>
+            <div class="dim-list" id="heroDims"></div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- === 测评方式 === -->
+    <section class="section" id="how">
+      <div class="wrap">
+        <p class="eyebrow reveal" style="--i:0" data-i18n="how.eyebrow">HOW IT WORKS</p>
+        <h2 class="section-title reveal" style="--i:1" data-i18n="how.title">三步得到一份可执行的报告</h2>
+        <p class="section-lead reveal" style="--i:2" data-i18n="how.lead">测试全程在浏览器完成……</p>
+
+        <div class="grid grid--3" style="margin-top:44px">
+          <article class="card reveal" style="--i:3">
+            <div class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 1 1 9 5c-1.5 1-2 2-2 4a2 2 0 1 1-4 0"/><path d="M6 12a6 6 0 0 0 .5 3"/></svg>
+            </div>
+            <p class="num-tag">01 · <span data-i18n="how.listening">听力</span></p>
+            <h3 class="card__title" data-i18n="how.s1t">听力测试</h3>
+            <p data-i18n="how.s1d">短对话、长对话与听写填空……</p>
+          </article>
+          <article class="card reveal" style="--i:4">
+            <div class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10a7 7 0 0 1-14 0"/><path d="M12 17v4"/><path d="M8 21h8"/></svg>
+            </div>
+            <p class="num-tag">02 · <span data-i18n="how.speaking">口语</span></p>
+            <h3 class="card__title" data-i18n="how.s2t">口语测试</h3>
+            <p data-i18n="how.s2d">朗读、话题独白、情景问答与听后复述……</p>
+          </article>
+          <article class="card reveal" style="--i:5">
+            <div class="card__icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V6"/><path d="M4 20h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-3"/></svg>
+            </div>
+            <p class="num-tag">03 · <span data-i18n="how.report">报告</span></p>
+            <h3 class="card__title" data-i18n="how.s3t">生成报告</h3>
+            <p data-i18n="how.s3d">给出总分、等级徽章、五维雷达图……</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- === 等级标准 === -->
+    <section class="section" id="levels" style="background:var(--paper-2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+      <div class="wrap">
+        <p class="eyebrow reveal" style="--i:0" data-i18n="levels.eyebrow">LEVEL STANDARD</p>
+        <h2 class="section-title reveal" style="--i:1" data-i18n="levels.title">等级划分（对齐 CEFR）</h2>
+        <p class="section-lead reveal" style="--i:2" data-i18n="levels.lead">核心标准只有一个：能否与外国人流畅沟通。</p>
+        <div class="levels reveal" style="--i:3;margin-top:28px" id="levelList"></div>
+      </div>
+    </section>
+
+    <!-- === 开始 === -->
+    <section class="section" id="start">
+      <div class="wrap wrap--narrow">
+        <p class="eyebrow reveal" style="--i:0" data-i18n="start.eyebrow">BEFORE YOU START</p>
+        <h2 class="section-title reveal" style="--i:1" data-i18n="start.title">开始前请确认</h2>
+        <ul class="levels reveal" style="--i:2;margin:22px 0 26px">
+          <li class="level-row"><span class="level-row__code" aria-hidden="true">01</span><span class="level-row__desc" data-i18n="start.check1">使用 Chrome / Edge / Safari 最新版本</span></li>
+          <li class="level-row"><span class="level-row__code" aria-hidden="true">02</span><span class="level-row__desc" data-i18n="start.check2">允许使用麦克风</span></li>
+          <li class="level-row"><span class="level-row__code" aria-hidden="true">03</span><span class="level-row__desc" data-i18n="start.check3">安静环境、佩戴耳机</span></li>
+        </ul>
+        <div class="btn-row reveal" style="--i:3">
+          <button class="btn btn--ghost" id="micCheckBtn" data-i18n="start.testMic">检测麦克风</button>
+          <a class="btn btn--primary" href="test.html?mode=quick" data-i18n="common.modeQuick">快速版</a>
+          <a class="btn btn--primary" href="test.html?mode=full" data-i18n="hero.ctaFull">完整版（约 25 分钟）</a>
+        </div>
+        <div id="micStatus" style="margin-top:18px"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- === Footer === -->
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <p class="footer-note" style="max-width:52ch">
+        © 2026 口语力测评 · 语音识别与口语评测由腾讯云提供 · 本页为独立静态站点，可直接部署到 GitHub Pages。
+      </p>
+      <p class="footer-note" id="apiFoot">—</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/i18n.js"></script>
+  <script src="assets/js/core.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/scoring.js"></script>
+  <script>
+    /* === 首页交互（内联，无外部依赖） === */
+    (async function () {
+      const DIMS = [
+        { key: 'dim.fluency', v: 78 },
+        { key: 'dim.pronunciation', v: 64 },
+        { key: 'dim.grammarVocab', v: 82 },
+        { key: 'dim.content', v: 71 },
+        { key: 'dim.interaction', v: 69 }
+      ];
+
+      function renderHeroDims() {
+        document.getElementById('heroDims').innerHTML = DIMS.map((d) => `
+          <div class="dim">
+            <span class="dim__name">${I18N.t(d.key)}</span>
+            <span class="dim__val">${d.v}</span>
+            <div class="dim__track"><div class="dim__fill" data-w="${d.v}"></div></div>
+          </div>`).join('');
+        requestAnimationFrame(() => {
+          document.querySelectorAll('#heroDims .dim__fill').forEach((el) => { el.style.width = el.dataset.w + '%'; });
+        });
+      }
+
+      try {
+        const bank = await CORE.loadBank();
+        const r = bank.rubric;
+        // 等级表
+        document.getElementById('levelList').innerHTML = r.levels.map((lv) => `
+          <div class="level-row">
+            <span class="level-row__code">${lv.code}</span>
+            <span class="level-row__desc"><b style="color:var(--ink)">${I18N.current() === 'zh' ? lv.labelZh : lv.labelEn}</b> — ${I18N.current() === 'zh' ? lv.descZh : lv.descEn}</span>
+            <span class="level-row__range">${Math.round(lv.min)}–${Math.min(100, Math.round(lv.max))}</span>
+          </div>`).join('');
+        document.addEventListener('i18n:change', () => {
+          document.getElementById('levelList').innerHTML = r.levels.map((lv) => `
+            <div class="level-row">
+              <span class="level-row__code">${lv.code}</span>
+              <span class="level-row__desc"><b style="color:var(--ink)">${I18N.current() === 'zh' ? lv.labelZh : lv.labelEn}</b> — ${I18N.current() === 'zh' ? lv.descZh : lv.descEn}</span>
+              <span class="level-row__range">${Math.round(lv.min)}–${Math.min(100, Math.round(lv.max))}</span>
+            </div>`).join('');
+        });
+      } catch (e) {
+        document.getElementById('levelList').innerHTML =
+          `<div class="notice notice--warn">题库加载失败：${CORE.escapeHTML(e.message)}。请用本地服务器打开（如 <code>python -m http.server 8080</code>）。</div>`;
+      }
+
+      renderHeroDims();
+      document.addEventListener('i18n:change', renderHeroDims);
+
+      // 麦克风检测
+      document.getElementById('micCheckBtn').addEventListener('click', async () => {
+        const box = document.getElementById('micStatus');
+        box.innerHTML = '<div class="judging"><span class="spinner"></span> 检测中…</div>';
+        try {
+          await Recorder.requestPermission();
+          box.innerHTML = `<div class="notice notice--info">${I18N.t('start.micOk')}</div>`;
+        } catch (e) {
+          box.innerHTML = `<div class="notice notice--error">${I18N.t('start.micFail')}<br><small>${CORE.escapeHTML(e.message)}</small></div>`;
+        }
+      });
+
+      // 后端状态
+      SpeechAPI.health().then((h) => {
+        const foot = document.getElementById('apiFoot');
+        foot.textContent = h.configured ? I18N.t('status.live') : I18N.t('status.mock');
+        foot.style.color = h.configured ? 'var(--accent)' : 'var(--ink-4)';
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+{
+  "name": "speak-test-sign",
+  "version": "1.0.0",
+  "description": "腾讯云语音识别(ASR) / 智聆口语评测(SOE) 签名代理服务 —— 纯 Node.js 实现，无第三方依赖，密钥仅存于服务端环境变量。",
+  "main": "sign.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node sign.js"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "license": "MIT"
+}
