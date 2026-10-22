@@ -120,10 +120,10 @@
     }
   },
   "quickMode": {
-    "listenIds": ["LS-S1", "LS-S2", "LS-S3", "LS-D1"],
-    "speakIds": ["SP-R5", "SP-R1", "SP-T1", "SP-I1", "SP-RT2"],
-    "descZh": "快速版：约 10 分钟，听力 4 题 + 口语 5 题，给出粗略等级。",
-    "descEn": "Quick mode: about 10 minutes, 4 listening + 5 speaking items, rough level."
+    "listenIds": ["LS-S1", "LS-S3", "LS-S6", "LS-D1"],
+    "speakIds": ["SP-R5", "SP-R1", "SP-T1", "SP-I3", "SP-T2"],
+    "descZh": "快速版：约 10 分钟，听力 4 题（A2–B2）+ 口语 5 题（A1–B2），给出粗略等级。",
+    "descEn": "Quick mode: about 10 minutes, 4 listening items (A2–B2) and 5 speaking items (A1–B2), rough level."
   },
   "fullMode": {
     "descZh": "完整版：约 25 分钟，全部听力与口语题型，精准评分。",

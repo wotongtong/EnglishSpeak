@@ -2,9 +2,14 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>口语力测评 · 英语口语水平在线测试</title>
   <meta name="description" content="以「能否与外国人流畅沟通」为核心标准的英语口语与听力在线测评，给出 CEFR 对齐等级与可执行改进建议。" />
+  <meta name="theme-color" content="#1c6b5a" />
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="口语力测评 · 英语口语水平在线测试" />
+  <meta property="og:description" content="对齐 CEFR 的口语 + 听力测评，测出你能否与外国人流畅沟通。" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b5a'/%3E%3Cpath d='M16 7v9M11 11a5 5 0 0 0 10 0' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M9 24c2-1.6 4.5-2.4 7-2.4s5 .8 7 2.4' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -24,14 +29,20 @@
           <small data-i18n="brand.sub">SPEAK ASSESS</small>
         </span>
       </a>
-      <nav class="nav__links" aria-label="主导航">
+      <nav class="nav__links" id="navLinks" aria-label="主导航">
         <a href="#how" data-i18n="nav.how">测评方式</a>
         <a href="#levels" data-i18n="nav.levels">等级标准</a>
+        <a href="#faq" data-i18n="faq.title">常见问题</a>
         <a href="#start" data-i18n="nav.start">开始测评</a>
       </nav>
-      <div class="lang-switch" role="group" aria-label="语言切换">
-        <button data-lang="zh" aria-pressed="true">中文</button>
-        <button data-lang="en" aria-pressed="false">EN</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="lang-switch" role="group" aria-label="语言切换">
+          <button data-lang="zh" aria-pressed="true">中文</button>
+          <button data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+        </button>
       </div>
     </div>
   </header>
@@ -126,7 +137,21 @@
           <a class="btn btn--primary" href="test.html?mode=quick" data-i18n="common.modeQuick">快速版</a>
           <a class="btn btn--primary" href="test.html?mode=full" data-i18n="hero.ctaFull">完整版（约 25 分钟）</a>
         </div>
-        <div id="micStatus" style="margin-top:18px"></div>
+        <div id="micStatus" style="margin-top:18px" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- === FAQ === -->
+    <section class="section" id="faq" style="background:var(--paper-2);border-top:1px solid var(--line)">
+      <div class="wrap wrap--narrow">
+        <p class="eyebrow reveal" style="--i:0" data-i18n="faq.eyebrow">FAQ</p>
+        <h2 class="section-title reveal" style="--i:1" data-i18n="faq.title">常见问题</h2>
+        <div class="faq reveal" style="--i:2;margin-top:20px">
+          <div class="faq-item"><h3 data-i18n="faq.q1">分数是怎么算出来的？</h3><p data-i18n="faq.a1">……</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.q2">需要麦克风权限吗？</h3><p data-i18n="faq.a2">……</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.q3">我的数据会被保存吗？</h3><p data-i18n="faq.a3">……</p></div>
+          <div class="faq-item"><h3 data-i18n="faq.q4">为什么分数有时偏低？</h3><p data-i18n="faq.a4">……</p></div>
+        </div>
       </div>
     </section>
   </main>
@@ -143,11 +168,12 @@
 
   <script src="assets/js/i18n.js"></script>
   <script src="assets/js/core.js"></script>
+  <script src="assets/js/recorder.js"></script>
   <script src="assets/js/api.js"></script>
   <script src="assets/js/scoring.js"></script>
   <script>
     /* === 首页交互（内联，无外部依赖） === */
-    (async function () {
+    (function () {
       const DIMS = [
         { key: 'dim.fluency', v: 78 },
         { key: 'dim.pronunciation', v: 64 },
@@ -155,6 +181,20 @@
         { key: 'dim.content', v: 71 },
         { key: 'dim.interaction', v: 69 }
       ];
+
+      /* 移动端导航 */
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        navToggle.addEventListener('click', () => {
+          const open = navLinks.classList.toggle('is-open');
+          navToggle.setAttribute('aria-expanded', String(open));
+        });
+        navLinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+          navLinks.classList.remove('is-open');
+          navToggle.setAttribute('aria-expanded', 'false');
+        }));
+      }
 
       function renderHeroDims() {
         document.getElementById('heroDims').innerHTML = DIMS.map((d) => `
@@ -168,35 +208,35 @@
         });
       }
 
-      try {
-        const bank = await CORE.loadBank();
-        const r = bank.rubric;
-        // 等级表
+      function renderLevels(r) {
         document.getElementById('levelList').innerHTML = r.levels.map((lv) => `
           <div class="level-row">
             <span class="level-row__code">${lv.code}</span>
             <span class="level-row__desc"><b style="color:var(--ink)">${I18N.current() === 'zh' ? lv.labelZh : lv.labelEn}</b> — ${I18N.current() === 'zh' ? lv.descZh : lv.descEn}</span>
             <span class="level-row__range">${Math.round(lv.min)}–${Math.min(100, Math.round(lv.max))}</span>
           </div>`).join('');
-        document.addEventListener('i18n:change', () => {
-          document.getElementById('levelList').innerHTML = r.levels.map((lv) => `
-            <div class="level-row">
-              <span class="level-row__code">${lv.code}</span>
-              <span class="level-row__desc"><b style="color:var(--ink)">${I18N.current() === 'zh' ? lv.labelZh : lv.labelEn}</b> — ${I18N.current() === 'zh' ? lv.descZh : lv.descEn}</span>
-              <span class="level-row__range">${Math.round(lv.min)}–${Math.min(100, Math.round(lv.max))}</span>
-            </div>`).join('');
-        });
-      } catch (e) {
+      }
+
+      let rubricRef = null;
+      CORE.loadBank().then((bank) => {
+        rubricRef = bank.rubric;
+        renderLevels(rubricRef);
+        document.addEventListener('i18n:change', () => { if (rubricRef) renderLevels(rubricRef); });
+      }).catch((e) => {
         document.getElementById('levelList').innerHTML =
           `<div class="notice notice--warn">题库加载失败：${CORE.escapeHTML(e.message)}。请用本地服务器打开（如 <code>python -m http.server 8080</code>）。</div>`;
-      }
+      });
 
       renderHeroDims();
       document.addEventListener('i18n:change', renderHeroDims);
 
-      // 麦克风检测
+      /* 麦克风检测 */
       document.getElementById('micCheckBtn').addEventListener('click', async () => {
         const box = document.getElementById('micStatus');
+        if (!window.Recorder) {
+          box.innerHTML = `<div class="notice notice--error">录音模块未加载，请刷新页面重试。</div>`;
+          return;
+        }
         box.innerHTML = '<div class="judging"><span class="spinner"></span> 检测中…</div>';
         try {
           await Recorder.requestPermission();
@@ -206,7 +246,7 @@
         }
       });
 
-      // 后端状态
+      /* 后端状态 */
       SpeechAPI.health().then((h) => {
         const foot = document.getElementById('apiFoot');
         foot.textContent = h.configured ? I18N.t('status.live') : I18N.t('status.mock');

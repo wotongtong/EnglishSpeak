@@ -174,6 +174,37 @@ const SCORING = (function () {
     };
   }
 
+  /**
+   * 离线估分：当识别服务不可用（未配置密钥 / CAM 无权限 / 网络异常）时，
+   * 依据作答时长与声学活跃度给出估计分，避免测评中断。
+   * 因无法判断内容与语法，分数上限受限，并在报告中明确标注为估算。
+   */
+  function estimateOffline(item, input) {
+    input = input || {};
+    const dur = Math.max(1, input.durationSec || item.durationSec || 30);
+    const activeRatio = typeof input.activeRatio === 'number' ? input.activeRatio : 0.6;
+    const avgLevel = typeof input.avgLevel === 'number' ? input.avgLevel : 0.2;
+    const isReadLike = item.type === 'read' || item.type === 'retell';
+
+    const target = item.durationSec || 30;
+    const effective = dur * activeRatio;                 // 有效发声时长
+    const effort = clamp(effective / (target * 0.7), 0, 1);
+
+    const fluency = clamp(38 + effort * 44 + avgLevel * 12, 20, 80);
+    const pronunciation = clamp(50 + avgLevel * 22, 30, 68);
+    const grammarVocab = clamp(46 + effort * 22, 30, 68);
+    const content = clamp(42 + effort * 26, 25, 70);
+    const interaction = clamp(fluency * 0.5 + content * 0.5, 25, 75);
+
+    const dims = mapRound({ fluency, pronunciation, grammarVocab, content, interaction });
+    const w = isReadLike
+      ? { fluency: 0.2, pronunciation: 0.4, grammarVocab: 0.15, content: 0.2, interaction: 0.05 }
+      : { fluency: 0.25, pronunciation: 0.2, grammarVocab: 0.2, content: 0.25, interaction: 0.1 };
+    const score = Math.round(Object.keys(w).reduce((s, k) => s + dims[k] * w[k], 0));
+
+    return { dims, score, offline: true, transcript: '', metrics: textMetrics('') };
+  }
+
   function mapRound(obj) {
     const out = {};
     Object.keys(obj).forEach((k) => { out[k] = Math.round(obj[k]); });
@@ -272,7 +303,7 @@ const SCORING = (function () {
   return {
     FILLERS, CONNECTORS,
     textMetrics, keywordCoverage,
-    evaluateSpeaking, evaluateListening,
+    evaluateSpeaking, evaluateListening, estimateOffline,
     aggregate, levelOf,
   };
 })();

@@ -351,6 +351,55 @@ ul { margin: 0; padding: 0; list-style: none; }
   .rec-controls .btn { flex: 1; }
 }
 
+/* === 答题页头部在小屏下的重排 === */
+@media (max-width: 768px) {
+  .test-shell .nav { flex-wrap: wrap; height: auto; padding-top: 10px; padding-bottom: 10px; row-gap: 10px; }
+  .test-shell .test-head { order: 3; width: 100%; justify-content: flex-start; flex-wrap: wrap; }
+}
+
+/* 答题页导航：桌面隐藏，移动端由 .is-open 唤出 */
+.test-shell .nav__links { display: none; }
+
+/* === 移动端导航（汉堡菜单） === */
+.nav__toggle { display: none; }
+.nav { position: relative; }
+@media (max-width: 768px) {
+  .nav__toggle {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 40px; height: 40px; border: 1px solid var(--line-strong); border-radius: 10px;
+    background: var(--card); color: var(--ink); cursor: pointer; padding: 0;
+  }
+  .nav__toggle svg { width: 20px; height: 20px; }
+  .nav__links.is-open {
+    display: flex; flex-direction: column; align-items: stretch; gap: 2px;
+    position: absolute; top: 60px; left: 0; right: 0;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-m);
+    padding: 10px; box-shadow: var(--shadow-m); z-index: 30;
+  }
+  .nav__links.is-open a { padding: 11px 12px; border-radius: 8px; font-size: 0.98rem; }
+  .nav__links.is-open a:hover { background: var(--accent-soft); text-decoration: none; }
+}
+
+/* === 报告雷达图（响应式） === */
+#radar { display: block; width: 100%; max-width: 100%; height: auto; }
+.radar-card { overflow: hidden; }
+
+/* === 录音超时提示 === */
+.rec-timer.is-rec-warn { color: var(--warn); }
+
+/* === 选项键盘焦点 === */
+.option:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* === FAQ === */
+.faq { border-top: 1px solid var(--line); }
+.faq-item { padding: 20px 0; border-bottom: 1px solid var(--line); }
+.faq-item:last-child { border-bottom: 0; }
+.faq-item h3 { font-size: 1.02rem; margin-bottom: 8px; }
+.faq-item p { color: var(--ink-3); font-size: 0.94rem; margin: 0; }
+
+/* === 答题页按钮最小宽度，避免布局跳动 === */
+.test-main .btn-row .btn { min-width: 96px; }
+
 /* === 打印 === */
 @media print {
   .site-header, .site-footer, .btn { display: none !important; }

@@ -4,11 +4,12 @@
  * ----------------------------------------------------------------------------
  *  · getUserMedia 采集 → 重采样为 16kHz 单声道 16bit PCM
  *  · 编码为标准 WAV，并转 Base64（腾讯云 ASR / SOE 均可直接使用）
- *  · 实时输出音量电平，供波形可视化
+ *  · 实时输出音量电平（波形可视化）；同时累计声学指标供离线估分
  *
  *  典型用法：
- *    const rec = await Recorder.start({ onLevel: v => {...}, onTime: t => {...} });
- *    const out = await Recorder.stop();   // { base64, durationSec, blob }
+ *    const rec = await Recorder.start({ onLevel, onTime });
+ *    const out = await Recorder.stop();
+ *    // out: { base64, blob, durationSec, avgLevel, activeRatio, format:'wav' }
  * ========================================================================== */
 'use strict';
 
@@ -18,17 +19,22 @@ const Recorder = (function () {
   let source = null;
   let processor = null;
   let buffers = [];
+  let levels = [];
   let recording = false;
   let startedAt = 0;
   let timerId = null;
   let handlers = {};
 
   const TARGET_RATE = 16000;
+  const SILENCE_THRESHOLD = 0.06; // 判定"有效发声"的音量阈值
 
   function isSupported() {
-    return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia && window.AudioContext || window.webkitAudioContext);
+    const hasCtx = !!(window.AudioContext || window.webkitAudioContext);
+    const hasMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+    return hasMic && hasCtx;
   }
 
+  /** 仅探测权限，拿到后立即释放 */
   async function requestPermission() {
     if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
       throw new Error('当前浏览器不支持麦克风采集，请使用最新版 Chrome / Edge / Safari。');
@@ -36,7 +42,6 @@ const Recorder = (function () {
     const s = await navigator.mediaDevices.getUserMedia({
       audio: { echoCancellation: true, noiseSuppression: true, channelCount: 1 },
     });
-    // 立即释放，仅用于探测权限
     s.getTracks().forEach((t) => t.stop());
     return true;
   }
@@ -89,9 +94,9 @@ const Recorder = (function () {
     view.setUint16(20, 1, true);            // PCM
     view.setUint16(22, 1, true);            // 单声道
     view.setUint32(24, sampleRate, true);
-    view.setUint32(28, sampleRate * 2, true); // byteRate
-    view.setUint16(32, 2, true);            // blockAlign
-    view.setUint16(34, 16, true);           // bits
+    view.setUint32(28, sampleRate * 2, true);
+    view.setUint16(32, 2, true);
+    view.setUint16(34, 16, true);
     w(36, 'data');
     view.setUint32(40, pcm.byteLength, true);
     return new Blob([header, pcm], { type: 'audio/wav' });
@@ -106,6 +111,10 @@ const Recorder = (function () {
     });
   }
 
+  /**
+   * 开始录音
+   * @param {object} opts { onLevel(0~1), onTime(sec), onError(err) }
+   */
   async function start(opts) {
     handlers = opts || {};
     if (recording) return false;
@@ -118,26 +127,29 @@ const Recorder = (function () {
     source = audioCtx.createMediaStreamSource(stream);
     processor = audioCtx.createScriptProcessor(2048, 1, 1);
     buffers = [];
+    levels = [];
 
     processor.onaudioprocess = (e) => {
       const input = e.inputBuffer.getChannelData(0);
       buffers.push(new Float32Array(input));
 
-      // 计算 RMS 音量（0~1）
       let sum = 0;
       for (let i = 0; i < input.length; i += 8) sum += input[i] * input[i];
       const rms = Math.sqrt(sum / (input.length / 8));
-      if (handlers.onLevel) handlers.onLevel(Math.min(1, rms * 3.2));
+      const level = Math.min(1, rms * 3.2);
+      levels.push(level);
+      if (handlers.onLevel) handlers.onLevel(level);
     };
 
     source.connect(processor);
-    processor.connect(audioCtx.destination); // 需连到 destination 才会触发处理
+    processor.connect(audioCtx.destination);
 
     recording = true;
     startedAt = Date.now();
     if (handlers.onTime) handlers.onTime(0);
     timerId = setInterval(() => {
-      if (handlers.onTime) handlers.onTime(Math.floor((Date.now() - startedAt) / 1000));
+      const sec = Math.floor((Date.now() - startedAt) / 1000);
+      if (handlers.onTime) handlers.onTime(sec);
     }, 200);
     return true;
   }
@@ -149,20 +161,30 @@ const Recorder = (function () {
 
     return new Promise((resolve) => {
       const finish = async () => {
+        // 关键：sampleRate 必须在 close() 之前读取
+        const inRate = audioCtx ? audioCtx.sampleRate : 48000;
         try { processor.disconnect(); } catch (e) {}
         try { source.disconnect(); } catch (e) {}
         stream.getTracks().forEach((t) => t.stop());
         try { audioCtx.close(); } catch (e) {}
 
         const merged = mergeBuffers(buffers);
-        const inRate = audioCtx ? audioCtx.sampleRate : 48000;
         const down = downsample(merged, inRate, TARGET_RATE);
         const wavBlob = encodeWAV(down, TARGET_RATE);
         const base64 = await blobToBase64(wavBlob);
         const durationSec = Math.max(1, Math.round(down.length / TARGET_RATE));
-        resolve({ base64, blob: wavBlob, durationSec, sampleRate: TARGET_RATE, format: 'wav' });
+
+        const avgLevel = levels.length ? levels.reduce((a, b) => a + b, 0) / levels.length : 0;
+        const active = levels.filter((v) => v > SILENCE_THRESHOLD).length;
+        const activeRatio = levels.length ? active / levels.length : 0;
+
+        resolve({
+          base64, blob: wavBlob, durationSec,
+          sampleRate: TARGET_RATE, format: 'wav',
+          avgLevel, activeRatio,
+          objectUrl: URL.createObjectURL(wavBlob),
+        });
       };
-      // 稍作延迟，确保最后的音频块已被处理
       setTimeout(finish, 120);
     });
   }

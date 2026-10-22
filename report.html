@@ -2,10 +2,12 @@
 <html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>测评报告 · 口语力测评</title>
   <meta name="description" content="英语口语水平测评报告：总分、等级、五维雷达图与改进建议。" />
+  <meta name="theme-color" content="#1c6b5a" />
   <meta name="robots" content="noindex" />
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%231c6b5a'/%3E%3Cpath d='M16 7v9M11 11a5 5 0 0 0 10 0' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3Cpath d='M9 24c2-1.6 4.5-2.4 7-2.4s5 .8 7 2.4' stroke='white' stroke-width='2.2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -22,21 +24,25 @@
         </span>
         <span><span data-i18n="brand.name">口语力测评</span><small data-i18n="brand.sub">SPEAK ASSESS</small></span>
       </a>
-      <nav class="nav__links" aria-label="主导航">
+      <nav class="nav__links" id="navLinks" aria-label="主导航">
         <a href="index.html" data-i18n="nav.home">首页</a>
         <a href="index.html#levels" data-i18n="nav.levels">等级标准</a>
         <a href="test.html?mode=quick" data-i18n="nav.restart">重新测评</a>
       </nav>
-      <div class="lang-switch" role="group" aria-label="语言切换">
-        <button data-lang="zh" aria-pressed="true">中文</button>
-        <button data-lang="en" aria-pressed="false">EN</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="lang-switch" role="group" aria-label="语言切换">
+          <button data-lang="zh" aria-pressed="true">中文</button>
+          <button data-lang="en" aria-pressed="false">EN</button>
+        </div>
+        <button class="nav__toggle" id="navToggle" aria-expanded="false" aria-controls="navLinks" aria-label="菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16"/><path d="M4 12h16"/><path d="M4 17h16"/></svg>
+        </button>
       </div>
     </div>
   </header>
 
   <!-- === 报告主体（由 report.js 渲染） === -->
   <main id="reportRoot">
-    <!-- 骨架屏（脚本渲染前显示） -->
     <div class="wrap wrap--narrow" style="padding:60px 24px">
       <div class="skeleton loading-line" style="width:120px"></div>
       <div class="skeleton loading-line" style="width:60%;height:34px"></div>
@@ -47,9 +53,7 @@
   <!-- === Footer === -->
   <footer class="site-footer">
     <div class="wrap footer-grid">
-      <p class="footer-note" style="max-width:54ch">
-        报告由本站在你的浏览器内生成，测评数据仅保存在本机（localStorage），不会上传第三方。
-      </p>
+      <p class="footer-note" style="max-width:54ch" data-i18n="footer.privacy">报告在本机浏览器内生成，测评数据仅保存在 localStorage。</p>
       <a class="footer-note" href="index.html" data-i18n="nav.backHome">返回首页</a>
     </div>
   </footer>
@@ -58,5 +62,21 @@
   <script src="assets/js/core.js"></script>
   <script src="assets/js/scoring.js"></script>
   <script src="assets/js/report.js"></script>
+  <script>
+    /* 移动端导航开关 */
+    (function () {
+      const t = document.getElementById('navToggle');
+      const n = document.getElementById('navLinks');
+      if (!t || !n) return;
+      t.addEventListener('click', () => {
+        const open = n.classList.toggle('is-open');
+        t.setAttribute('aria-expanded', String(open));
+      });
+      n.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => {
+        n.classList.remove('is-open');
+        t.setAttribute('aria-expanded', 'false');
+      }));
+    })();
+  </script>
 </body>
 </html>
