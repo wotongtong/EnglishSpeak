@@ -4,3 +4,8 @@ server/.env
 *.log
 .DS_Store
 Thumbs.db
+# 本地工具产物（不应纳入仓库）
+.opencode/
+.codearts/
+.continue/
+
