@@ -113,6 +113,12 @@ const SCORING = (function () {
    * @param {object} input    { transcript, soe, durationSec }
    * @returns {object}        { dims, score, metrics, mock }
    */
+  /** SOE 字段取值：PronAccuracy 为 0–100；PronFluency / PronCompletion 为 0–1；-1 表示无意义 */
+  function soeField(v) {
+    if (typeof v !== 'number' || isNaN(v) || v < 0) return null;
+    return v;
+  }
+
   function evaluateSpeaking(item, input) {
     input = input || {};
     const soe = input.soe || {};
@@ -120,24 +126,29 @@ const SCORING = (function () {
     const metrics = textMetrics(input.transcript || '');
     const isReadLike = item.type === 'read' || item.type === 'retell';
 
-    // 发音：优先采用 SOE 的 PronAccuracy
-    const pronunciation = clamp(
-      pick(soe.PronAccuracy, isReadLike ? 62 : 58) * 0.92 +
-      pick(soe.PronCompletion, 70) * 0.08,
-      5, 99
-    );
+    const accuracy = soeField(soe.PronAccuracy);                       // 0–100
+    const fluency01 = soeField(soe.PronFluency);                       // 0–1
+    const completion01 = soeField(soe.PronCompletion);                 // 0–1
+    const fluencyPct = fluency01 == null ? null : fluency01 * 100;
+    const completionPct = completion01 == null ? null : completion01 * 100;
+    const soeMissing = accuracy == null && fluencyPct == null && completionPct == null;
 
-    // 流利度：朗读题以 SOE 流利度为主，话题题以文本度量为主要参考
-    const soeFluency = pick(soe.PronFluency, null);
-    const fluency = isReadLike && soeFluency != null
-      ? clamp(soeFluency * 0.7 + fluencyScore(metrics, durationSec) * 0.3, 5, 99)
-      : fluencyScore(metrics, durationSec);
+    // 发音：优先采用 SOE 的 PronAccuracy；缺失（未开通口语评测等）时用中性值，并在报告中标注
+    const pronunciation = accuracy != null
+      ? clamp(accuracy * 0.92 + (completionPct == null ? 70 : completionPct) * 0.08, 5, 99)
+      : 60;
+
+    // 流利度：朗读/复述以 SOE 流利度为主，话题/情景以文本度量为主要参考
+    const textFluency = fluencyScore(metrics, durationSec);
+    const fluency = (isReadLike && fluencyPct != null)
+      ? clamp(fluencyPct * 0.7 + textFluency * 0.3, 5, 99)
+      : textFluency;
 
     // 内容
     let content;
     if (isReadLike) {
       const cover = keywordCoverage(metrics.text, item.keywords);
-      content = clamp(pick(soe.PronCompletion, 70) * 0.7 + (cover == null ? 60 : cover * 100) * 0.3, 5, 99);
+      content = clamp((completionPct == null ? 70 : completionPct) * 0.7 + (cover == null ? 60 : cover * 100) * 0.3, 5, 99);
     } else {
       content = contentScore(metrics, item.keywords, durationSec);
     }
@@ -145,12 +156,12 @@ const SCORING = (function () {
     // 语法与词汇
     const grammarVocab = metrics.wordCount >= 4
       ? grammarVocabScore(metrics)
-      : clamp(pick(soe.PronAccuracy, 60) * 0.6 + 20, 5, 90);
+      : clamp((accuracy == null ? 60 : accuracy) * 0.6 + 20, 5, 90);
 
-    // 交际策略：仅情景题强相关；其余用连贯性代理
+    // 交际策略：情景题强相关；其余用连贯性代理
     let interaction;
     if (item.type === 'interaction') {
-      const hasResponse = /\?|sorry|could you|i understand|let me|sorry|thanks|thank you/i.test(metrics.text);
+      const hasResponse = /\?|sorry|could you|i understand|let me|thanks|thank you/i.test(metrics.text);
       interaction = clamp(content * 0.5 + fluency * 0.3 + (hasResponse ? 18 : 8), 5, 98);
     } else {
       interaction = clamp(fluency * 0.5 + content * 0.5, 5, 95);
@@ -170,6 +181,7 @@ const SCORING = (function () {
       score: Math.round(score),
       metrics,
       mock: Boolean(soe.Mock),
+      soeMissing,
       transcript: metrics.text,
     };
   }

@@ -11,13 +11,37 @@
 ## 一、前置准备
 
 1. 注册并实名认证腾讯云，控制台开通 **语音识别 ASR** 与 **智聆口语评测 SOE**。
+   - ⚠️ **两个服务要分别开通**，只开 ASR 也能用（此时发音分按录音特征估算，其余维度正常）。
+   - SOE 属于**付费产品**：开通后通常需在控制台**购买资源包**（有 9.9 元档用于开发调试）或开通后付费，否则调用会报：
+     `AuthFailure.AccountUnavailable 账号未开通口语评测服务或账号已欠费隔离`。
 2. 在 **CAM → 用户** 创建**子账号**（仅编程访问），附加策略：
-   - `QcloudASRFullAccess`
+   - `QcloudASRFullAccess`（语音识别）
    - 口语评测对应策略（若列表无此项，用自定义策略放行 `soe:*`）
-3. 记录子账号的 `SecretId` / `SecretKey`，以及账号的 `AppId`（可选）。
+3. 记录子账号的 `SecretId` / `SecretKey`。
 
-> 若调用报 `AuthFailure.UnauthorizedOperation ... resource (*) has no permission`，
-> 表示子账号缺策略，回 CAM 补充即可。
+> 错误码对照：
+> - `AuthFailure.UnauthorizedOperation ... resource (*) has no permission` → 子账号缺 CAM 策略，回 CAM 补授权。
+> - `AuthFailure.AccountUnavailable 账号未开通口语评测服务或账号已欠费隔离` → **服务未开通/欠费**，去智聆口语评测控制台开通并购买资源包。
+> - `InvalidAction ... action=xxx is invalid` → 接口名或 **Version 写错**，见下表。
+
+### 接口与版本速查（本项目已固化，勿改错）
+
+| 服务 | 域名 | Action | Version |
+|---|---|---|---|
+| 一句话识别 | `asr.tencentcloudapi.com` | `SentenceRecognition` | `2019-06-14` |
+| 智聆口语评测 | `soe.tencentcloudapi.com` | `TransmitOralProcessWithInit` | **`2018-07-24`** |
+
+> 注意：SOE 的 Version 是 `2018-07-24`（不是 `2018-07-17`，写错会报 `InvalidAction`）。
+> 另：`SoeAppId` 指的是控制台【应用管理】里新建的**业务应用 ID**（形如 `soe_100xxxxx`），
+> **不是**账号 AppId；未新建时切勿传入，否则会报欠费错误。本项目仅在显式提供时才附带该参数。
+
+### 评分依赖说明
+
+前端对 ASR 与 SOE **独立调用、互不拖累**：
+
+- 识别成功 + 评测失败 → 仍给出内容/流利/语法分，发音分按录音特征估算，并在页面标注提示；
+- 识别失败 → 本题降级为「离线估分」并提示，可「重试」；
+- 两者都成功 → 完整五维评分。
 
 ---
 

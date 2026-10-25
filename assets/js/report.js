@@ -75,8 +75,10 @@ const Report = (function () {
         </div>`;
     }).join('');
 
-    const offlineNotice = session.usingOffline
-      ? `<div class="notice notice--warn" style="margin-top:16px">${T('test.offlineNote')}</div>` : '';
+    const soeMissing = (session.speaking || []).some((r) => r.result && r.result.soeMissing);
+    const offlineNotice = (session.usingOffline
+      ? `<div class="notice notice--warn" style="margin-top:16px">${T('test.offlineNote')}</div>` : '')
+      + (soeMissing ? `<div class="notice notice--warn" style="margin-top:16px">${T('note.soeMissing')}</div>` : '');
 
     root.innerHTML = `
       <section class="report-hero">

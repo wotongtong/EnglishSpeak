@@ -137,7 +137,7 @@ function mockSoe(body) {
 async function handleAsr(body) {
   if (!CONFIGURED) return mockAsr(body);
   const params = {
-    ProjectId: APP_ID ? Number(APP_ID) : 0,
+    ProjectId: body.projectId ? Number(body.projectId) : 0,  // 注意：此处是「项目 ID」，不是账号 AppId
     SubServiceType: 2,                        // 2 = 一句话识别
     EngSerViceType: body.engine || '16k_en',  // 英文引擎
     SourceType: 1,                            // 1 = 语音数据（base64）
@@ -156,19 +156,25 @@ async function handleSoe(body) {
   const sessionId = body.sessionId || (Date.now() + '-' + Math.random().toString(36).slice(2, 8));
   const params = {
     SessionId: sessionId,
-    RefText: body.refText || '',
-    WorkMode: body.workMode != null ? body.workMode : 0,   // 0 朗读模式
-    EvalMode: body.evalMode != null ? body.evalMode : 1,   // 1 句子 / 2 段落 / 3 自由说
-    ScoreCoeff: body.scoreCoeff != null ? body.scoreCoeff : 2.0,
-    VoiceFileType: body.voiceFileType != null ? body.voiceFileType : 2, // 2 = wav
+    // RefText 为必传参数；自由说（EvalMode=3）时传空串
+    RefText: body.refText != null ? String(body.refText) : '',
+    WorkMode: body.workMode != null ? body.workMode : 0,   // 0 流式分片 / 1 非流式一次性
+    EvalMode: body.evalMode != null ? body.evalMode : 1,   // 0 单词 1 句子 2 段落 3 自由说
+    ScoreCoeff: body.scoreCoeff != null ? body.scoreCoeff : 2.0, // 评价苛刻指数 1.0–4.0
+    ServerType: body.serverType != null ? body.serverType : 0,   // 0 英文 1 中文
+    VoiceFileType: body.voiceFileType != null ? body.voiceFileType : 2, // 1 raw/pcm 2 wav 3 mp3
     VoiceEncodeType: 1,                                    // 1 = pcm
     SeqId: 1,
     IsEnd: 1,                                              // 一次性传送完整段音频
     UserVoiceData: body.audioBase64,
     TextMode: 0,
   };
-  if (APP_ID) params.SoeAppId = String(APP_ID);
-  const resp = await callTencent('soe', 'TransmitOralProcessWithInit', '2018-07-17', params);
+  // ⚠️ SoeAppId 是「业务应用 ID」（形如 soe_100xxxxx），不是账号 AppId。
+  // 未在控制台【应用管理】新建时切勿传入，否则会报欠费错误。仅在显式提供时带上。
+  if (body.soeAppId) params.SoeAppId = String(body.soeAppId);
+
+  // ⚠️ 版本必须为 2018-07-24（写成 2018-07-17 会返回 InvalidAction）
+  const resp = await callTencent('soe', 'TransmitOralProcessWithInit', '2018-07-24', params);
   resp.SessionId = sessionId;
   return resp;
 }

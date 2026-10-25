@@ -541,21 +541,34 @@ const Test = (function () {
 
     // 录音过大（超出服务端请求体上限）时，直接走离线估分，避免整题失败
     const approxBytes = Math.round((out.base64 || '').length * 0.75);
+    let asrOk = false, soeErr = '';
+
     if (approxBytes > 4 * 1024 * 1024) {
       failed = true;
       errMsg = T('test.tooLong');
     } else {
-      try {
-        const [asrRes, soeRes] = await Promise.all([
-          SpeechAPI.asr(out.base64, out.format),
-          SpeechAPI.soe(out.base64, refText, { evalMode, workMode: 0, scoreCoeff: 2.0 }),
-        ]);
-        transcript = (asrRes && asrRes.Result) || '';
-        soe = soeRes || {};
-      } catch (e) {
-        failed = true;
-        errMsg = e.message;
+      // ASR 与 SOE 分别调用、互不拖累：
+      // 识别成功但口语评测失败（例如未开通 SOE）时，仍可基于识别文本给出内容/流利/语法得分。
+      const [asrRes, soeRes] = await Promise.allSettled([
+        SpeechAPI.asr(out.base64, out.format),
+        SpeechAPI.soe(out.base64, refText, { evalMode, workMode: 0, scoreCoeff: 2.0 }),
+      ]);
+
+      if (asrRes.status === 'fulfilled') {
+        asrOk = true;
+        transcript = (asrRes.value && asrRes.value.Result) || '';
+      } else {
+        errMsg = (asrRes.reason && asrRes.reason.message) ? asrRes.reason.message : String(asrRes.reason);
       }
+
+      if (soeRes.status === 'fulfilled') {
+        soe = soeRes.value || {};
+      } else {
+        soeErr = (soeRes.reason && soeRes.reason.message) ? soeRes.reason.message : String(soeRes.reason);
+        soe = {};
+      }
+
+      failed = !asrOk;   // 仅「识别失败」才整题降级为离线估分
     }
 
     let result;
@@ -565,7 +578,8 @@ const Test = (function () {
       state.usingOffline = true;
     } else {
       result = SCORING.evaluateSpeaking(item, { transcript, soe, durationSec: out.durationSec });
-      result.mock = Boolean((soe && soe.Mock));
+      result.mock = Boolean(soe && soe.Mock);
+      result.soeError = soeErr;
     }
 
     record(state.idx, { result, transcript, durationSec: out.durationSec, skipped: false });
@@ -594,6 +608,12 @@ const Test = (function () {
       notice = `<div class="notice notice--warn" style="margin-top:18px">
           ${T('test.asrFailed')}<br><small>${CORE.escapeHTML(errMsg || '')}</small><br>
           <small>${T('test.offlineNote')}</small>
+        </div>` + notice;
+    }
+
+    if (!failed && result.soeMissing) {
+      notice = `<div class="notice notice--warn" style="margin-top:18px">
+          ${T('note.soeMissing')}${result.soeError ? '<br><small>' + CORE.escapeHTML(result.soeError) + '</small>' : ''}
         </div>` + notice;
     }
 
