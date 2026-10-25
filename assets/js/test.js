@@ -441,7 +441,7 @@ const Test = (function () {
     const visBars = Array.from(recVisual.children);
 
     let recording = false, attempts = 0, warned = false, lastOut = null;
-    const cap = (item.durationSec || 30) + 15;
+    const cap = Math.min((item.durationSec || 30) + 10, 58);
 
     const setTimer = (sec) => {
       timer.textContent = Math.floor(sec / 60) + ':' + String(sec % 60).padStart(2, '0');
@@ -539,16 +539,23 @@ const Test = (function () {
       : (item.type === 'retell' && item.listenScript) ? item.listenScript : '';
     const evalMode = item.type === 'read' ? 1 : (item.type === 'retell' ? 2 : 3);
 
-    try {
-      const [asrRes, soeRes] = await Promise.all([
-        SpeechAPI.asr(out.base64, out.format),
-        SpeechAPI.soe(out.base64, refText, { evalMode, workMode: 0, scoreCoeff: 2.0 }),
-      ]);
-      transcript = (asrRes && asrRes.Result) || '';
-      soe = soeRes || {};
-    } catch (e) {
+    // 录音过大（超出服务端请求体上限）时，直接走离线估分，避免整题失败
+    const approxBytes = Math.round((out.base64 || '').length * 0.75);
+    if (approxBytes > 4 * 1024 * 1024) {
       failed = true;
-      errMsg = e.message;
+      errMsg = T('test.tooLong');
+    } else {
+      try {
+        const [asrRes, soeRes] = await Promise.all([
+          SpeechAPI.asr(out.base64, out.format),
+          SpeechAPI.soe(out.base64, refText, { evalMode, workMode: 0, scoreCoeff: 2.0 }),
+        ]);
+        transcript = (asrRes && asrRes.Result) || '';
+        soe = soeRes || {};
+      } catch (e) {
+        failed = true;
+        errMsg = e.message;
+      }
     }
 
     let result;

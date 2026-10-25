@@ -150,11 +150,11 @@ PORT=8787
 ### 后端签名服务（任选其一）
 
 - **本地/自建**：`node server/sign.js`（端口 8787，适合开发调试）
-- **腾讯云云函数 SCF（推荐，可配合 GitHub Pages 使用）**：
-  源码在 `server/scf/`，操作步骤见 [`server/scf/README.md`](server/scf/README.md)；
+- **腾讯云云函数 SCF + 函数 URL（推荐，可配合 GitHub Pages 使用）**：
+  源码在 `server/scf/`，完整步骤见 [`server/scf/README.md`](server/scf/README.md)；
   待上传的打包产物为 `dist/speaktest-scf.zip`（含 `index.js` / `package.json` / `README.md`）。
-  上传后在「函数配置 → 环境变量」填入密钥，并按文档创建 API 网关触发器
-  （`/api/asr`、`/api/soe`、`/api/health`，需勾选**集成响应**）。
+  上传后在「函数配置 → 环境变量」填入密钥，再开启**函数 URL**（开启公网、授权类型选「开放」），
+  把得到的 `https://xxxx.ap-guangzhou.tencentscf.com` 写入前端 `window.SPEAKTEST_API_BASE` 即可（无需 API 网关）。
 - **Vercel / 其它 Serverless**：包装为 `/api/asr`、`/api/soe` 函数
 
 部署后修改前端 API 地址（任选其一）：
