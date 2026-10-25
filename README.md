@@ -33,9 +33,16 @@ CEFR 对齐的等级、五维能力分与可执行的改进建议。
 │       ├── listening.json  # 听力题库
 │       └── rubric.json     # 评分规则 / 等级分档 / 建议
 ├── server/
-│   ├── sign.js             # 腾讯云 TC3-HMAC-SHA256 签名代理（零依赖）
+│   ├── sign.js             # 本地版：腾讯云 TC3-HMAC-SHA256 签名代理（零依赖）
 │   ├── package.json
-│   └── .env.example        # 密钥模板（复制为 .env 填写）
+│   ├── .env.example        # 密钥模板（复制为 .env 填写）
+│   └── scf/                # 云函数 SCF 版（可直接上传腾讯云）
+│       ├── index.js        # 入口 index.main_handler
+│       ├── package.json
+│       ├── test-local.js   # 本地伪造事件自测
+│       └── README.md       # SCF 部署步骤
+├── dist/
+│   └── speaktest-scf.zip   # 待上传腾讯云的打包产物（已被 .gitignore 忽略）
 └── .gitignore
 ```
 
@@ -142,8 +149,12 @@ PORT=8787
 
 ### 后端签名服务（任选其一）
 
-- **本地/自建**：`node server/sign.js`
-- **腾讯云云函数 SCF**：把 `server/sign.js` 改为 SCF 入口，密钥配置为函数环境变量
+- **本地/自建**：`node server/sign.js`（端口 8787，适合开发调试）
+- **腾讯云云函数 SCF（推荐，可配合 GitHub Pages 使用）**：
+  源码在 `server/scf/`，操作步骤见 [`server/scf/README.md`](server/scf/README.md)；
+  待上传的打包产物为 `dist/speaktest-scf.zip`（含 `index.js` / `package.json` / `README.md`）。
+  上传后在「函数配置 → 环境变量」填入密钥，并按文档创建 API 网关触发器
+  （`/api/asr`、`/api/soe`、`/api/health`，需勾选**集成响应**）。
 - **Vercel / 其它 Serverless**：包装为 `/api/asr`、`/api/soe` 函数
 
 部署后修改前端 API 地址（任选其一）：

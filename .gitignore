@@ -4,8 +4,11 @@ server/.env
 *.log
 .DS_Store
 Thumbs.db
-# 本地工具产物（不应纳入仓库）
+
+# 鏈湴宸ュ叿浜х墿锛堜笉搴旂撼鍏ヤ粨搴擄級
 .opencode/
 .codearts/
 .continue/
 
+# 鎵撳寘浜х墿锛堟湰鍦扮敓鎴愶紝鎸夐渶涓婁紶鑵捐浜戯級
+dist/

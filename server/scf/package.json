@@ -1,0 +1,14 @@
+{
+  "name": "speaktest-scf",
+  "version": "1.0.0",
+  "description": "英语口语测评 —— 腾讯云云函数 SCF 版：语音识别(ASR) / 智聆口语评测(SOE) 签名代理。零第三方依赖。",
+  "main": "index.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=12"
+  },
+  "scripts": {
+    "start": "node index.js"
+  },
+  "license": "MIT"
+}
