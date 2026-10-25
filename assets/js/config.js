@@ -15,7 +15,7 @@
 (function () {
   /* 👇 把腾讯云「函数 URL」填在这里（不要带结尾斜杠、不要带路径）
      形如：https://12345678-xxxxxxxx.ap-guangzhou.tencentscf.com */
-  var REMOTE_API = '';
+  var REMOTE_API = 'https://1509289384-6tk9wginlf.ap-guangzhou.tencentscf.com';
 
   /* 本地签名服务（node server/sign.js） */
   var LOCAL_API = 'http://localhost:8787';
