@@ -234,23 +234,26 @@ exports.main_handler = async function (event, context) {
   // CORS 预检
   if (httpMethod === 'OPTIONS') return reply(204, {});
 
-  // 控制台「测试」默认发送空事件（{}），此时没有 httpMethod / path / action，
-  // 直接返回健康信息，便于自检而不是报 404。
-  const isEmptyEvent = !httpMethod && !parsed.path &&
-    !(body && body.audioBase64) && !(body && body.action) &&
-    (!body || Object.keys(body).length === 0);
-  if (isEmptyEvent) {
-    const info = healthInfo();
-    info.hint = '函数运行正常。请通过函数 URL 调用：GET /?action=health、POST /?action=asr、POST /?action=soe；' +
-      '或在控制台测试时传入 {"httpMethod":"GET","path":"/api/health"}。';
-    return reply(200, info);
-  }
-
   const action = pickAction(httpMethod, parsed.path, body, parsed.query);
   if (!action) {
+    // 没有 httpMethod → 不是 HTTP 调用，多为控制台「测试」传入的裸事件。
+    // 此时返回健康信息 + 收到的字段，便于自检，而不是直接报 404。
+    if (!httpMethod) {
+      const info = healthInfo();
+      info.hint = '函数运行正常。请通过函数 URL 调用：GET /?action=health、POST /?action=asr、POST /?action=soe；' +
+        '或在控制台测试时传入 {"httpMethod":"GET","path":"/api/health"}。';
+      info.receivedKeys = Object.keys(event);
+      return reply(200, info);
+    }
     return reply(404, {
       ok: false,
-      error: '接口不存在。请使用 POST /api/asr、POST /api/soe 或 GET /api/health；也可在 event.action 中指定。',
+      error: '接口不存在。请使用 POST /?action=asr、POST /?action=soe 或 GET /?action=health（也可用 /api/xxx 路径）。',
+      debug: {
+        httpMethod: httpMethod,
+        path: parsed.path,
+        queryKeys: Object.keys(parsed.query || {}),
+        bodyKeys: Object.keys(body || {}),
+      },
     });
   }
 
