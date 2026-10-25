@@ -234,6 +234,18 @@ exports.main_handler = async function (event, context) {
   // CORS 预检
   if (httpMethod === 'OPTIONS') return reply(204, {});
 
+  // 控制台「测试」默认发送空事件（{}），此时没有 httpMethod / path / action，
+  // 直接返回健康信息，便于自检而不是报 404。
+  const isEmptyEvent = !httpMethod && !parsed.path &&
+    !(body && body.audioBase64) && !(body && body.action) &&
+    (!body || Object.keys(body).length === 0);
+  if (isEmptyEvent) {
+    const info = healthInfo();
+    info.hint = '函数运行正常。请通过函数 URL 调用：GET /?action=health、POST /?action=asr、POST /?action=soe；' +
+      '或在控制台测试时传入 {"httpMethod":"GET","path":"/api/health"}。';
+    return reply(200, info);
+  }
+
   const action = pickAction(httpMethod, parsed.path, body, parsed.query);
   if (!action) {
     return reply(404, {
