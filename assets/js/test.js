@@ -171,6 +171,7 @@ const Test = (function () {
   /* ============================ 渲染 ============================ */
   function render() {
     const step = state.queue[state.idx];
+    stopAudio();
     els.stage.innerHTML = '';
     updateChrome();
     els.btnPrev.disabled = state.idx === 0;
@@ -325,34 +326,94 @@ const Test = (function () {
     }
   }
 
-  /* 音频播放条（TTS 朗读脚本 + 波形动画） */
+  /* 音频播放条：音频由腾讯云语音合成（TTS）生成，浏览器仅负责播放。
+     同一会话内相同文本只合成一次（内存缓存），避免重复计费。 */
+  const TTS_CACHE = new Map();   // text → objectURL
+  let activeAudio = null;
+
+  function base64ToBlobUrl(b64, mime) {
+    const bin = atob(b64);
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) bytes[i] = bin.charCodeAt(i);
+    return URL.createObjectURL(new Blob([bytes], { type: mime }));
+  }
+
+  function stopAudio() {
+    if (activeAudio) {
+      try { activeAudio.pause(); } catch (e) { /* ignore */ }
+      activeAudio = null;
+    }
+  }
+
+  async function ttsUrl(text) {
+    if (TTS_CACHE.has(text)) return TTS_CACHE.get(text);
+    const res = await SpeechAPI.tts(text, { speed: 0 });
+    if (!res || !res.Audio) throw new Error('TTS 未返回音频');
+    const url = base64ToBlobUrl(res.Audio, 'audio/wav');
+    TTS_CACHE.set(text, url);
+    return url;
+  }
+
   function wireAudioBar(panel, item) {
     const playBtn = panel.querySelector('#playBtn');
     const replayBtn = panel.querySelector('#replayBtn');
     const bars = panel.querySelector('#audioBars');
     const hint = panel.querySelector('#audioHint');
     if (!playBtn) return;
-    const script = item.listenScript || item.script || item.fullText || '';
+    const script = (item.listenScript || item.script || item.fullText || '').trim();
+    if (!script) return;
 
     let animId = null;
+    let playing = false;
     const barsEls = Array.from(bars.children);
+
     const animate = (on) => {
       bars.classList.toggle('is-playing', on);
       if (animId) { clearInterval(animId); animId = null; }
       if (!on) { barsEls.forEach((b) => { b.style.height = '30%'; }); return; }
       animId = setInterval(() => { barsEls.forEach((b) => { b.style.height = (18 + Math.random() * 78) + '%'; }); }, 110);
     };
+    const resetBtn = () => { playBtn.innerHTML = CORE.icon('play', 22); };
 
-    const play = () => {
-      if (!('speechSynthesis' in window)) { hint.textContent = T('test.noTTS'); return; }
-      playBtn.innerHTML = CORE.icon('pause', 22);
-      hint.textContent = T('common.listening');
-      CORE.speak(script, {
-        repeat: 2, rate: 0.9,
-        onStart: () => animate(true),
-        onEnd: () => { animate(false); playBtn.innerHTML = CORE.icon('play', 22); hint.textContent = T('test.played'); },
-      });
-    };
+    async function play() {
+      if (playing) {                       // 正在播放 → 停止
+        stopAudio(); playing = false; animate(false); resetBtn();
+        hint.textContent = T('common.replay');
+        return;
+      }
+      playBtn.disabled = true;
+      hint.textContent = T('common.loadingAudio');
+      try {
+        const url = await ttsUrl(script);
+        const audio = new Audio(url);
+        activeAudio = audio;
+        audio.addEventListener('playing', () => {
+          playing = true;
+          animate(true);
+          playBtn.innerHTML = CORE.icon('pause', 22);
+          hint.textContent = T('common.listening');
+        });
+        audio.addEventListener('ended', () => {
+          playing = false; animate(false); resetBtn();
+          hint.textContent = T('test.played');
+          if (activeAudio === audio) activeAudio = null;
+        });
+        audio.addEventListener('error', () => {
+          playing = false; animate(false); resetBtn();
+          hint.textContent = T('test.ttsFailed');
+          revealTranscript(panel);
+        });
+        await audio.play();
+      } catch (e) {
+        animate(false); resetBtn();
+        hint.textContent = T('test.ttsFailed');
+        revealTranscript(panel);
+        console.warn('[speaktest] TTS failed:', e && e.message);
+      } finally {
+        playBtn.disabled = false;
+      }
+    }
+
     playBtn.addEventListener('click', play);
     if (replayBtn) replayBtn.addEventListener('click', play);
   }
@@ -665,6 +726,7 @@ const Test = (function () {
 
   /* ============================ 汇总 ============================ */
   function finish() {
+    stopAudio();
     CORE.stopSpeak();
     state.finished = true;
     clearProgress();

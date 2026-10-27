@@ -81,7 +81,21 @@ const SpeechAPI = (function () {
     });
   }
 
-  return { BASE: RAW, newEndpoint: endpoint, health, asr, soe };
+  /** 语音合成（腾讯云 TTS）→ { Audio: base64, SessionId, Cached? } */
+  async function tts(text, opts) {
+    opts = opts || {};
+    return request('tts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: text,
+        voiceType: opts.voiceType,
+        speed: opts.speed != null ? opts.speed : 0,
+      }),
+    });
+  }
+
+  return { BASE: RAW, newEndpoint: endpoint, health, asr, soe, tts };
 })();
 
 window.SpeechAPI = SpeechAPI;
